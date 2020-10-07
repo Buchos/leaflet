@@ -1,31 +1,33 @@
-var mymap = L.map('mapid').setView([50.6412, 5.5718], 13);
+// eslint-disable-next-line unicorn/filename-case
+import React from "react";
+import "./leaflet.css";
+import { Map, Marker, TileLayer } from "react-leaflet";
+import Trees from "./data/arbustum.json";
+import icondata from "./data/tree.png"
 
-L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoiYnVjaDBzIiwiYSI6ImNrZno0MDJvZDAwODQycXFkOWE1ZjlpajUifQ.fSbRbSfF7mpjw0feoSQQnw', {
-    attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-    maxZoom: 18,
-    id: 'mapbox/streets-v11',
-    tileSize: 512,
-    zoomOffset: -1,
-    accessToken: 'your.mapbox.access.token'
-}).addTo(mymap);
+function Leaflet() {
+    const icon = L.icon({
+        iconUrl: icondata,
+        iconAnchor: [10, 0],
+        iconSize: [50, 50]
+    })
 
-var marker = L.marker([50.6412, 5.5718]).addTo(mymap);
 
-marker.bindPopup("<b>Hello world!</b><br>I am a popup.").openPopup();
-
-var popup = L.popup()
-    .setLatLng([51.5, -0.014])
-    .setContent("I am a standalone popup.")
-    .openOn(mymap);
-
-var popup = L.popup();
-
-function onMapClick(e) {
-    popup
-        .setLatLng(e.latlng)
-        .setContent("You clicked the map at " + e.latlng.toString())
-        .openOn(mymap);
+    return (
+        <Map center={[50.64, 5.57]} zoom={14}>
+            <TileLayer
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            />
+            {Trees.map((tree) => (
+                <Marker
+                    key={tree.arbotag}
+                    icon={icon}
+                    position={[tree.y_phi, tree.x_lambda]}
+                />
+            ))}
+        </Map>
+    );
 }
 
-mymap.on('click', onMapClick);
-
+export default Leaflet;
